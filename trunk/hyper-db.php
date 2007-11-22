@@ -1,6 +1,7 @@
 <?php
 
 define('HYPERDB', true);
+
 define('OBJECT', 'OBJECT', true);
 define('ARRAY_A', 'ARRAY_A', false);
 define('ARRAY_N', 'ARRAY_N', false);
@@ -78,20 +79,6 @@ class HyperDB {
 			//error_log( date( "Y-m-d H:i:s" ) . " Can't select $db - ".mysql_error( $dbh )."\n\n", 3, "/tmp/mysql.txt" );
 			$this->handle_error_connecting( $dbh, array( "db" => $db ) );
 		}
-	}
-
-	/**
-	 * Escapes content for insertion into the database, for security
-	 *
-	 * @param string $string
-	 * @return string query safe string
-	 */
-	function escape($string) {
-		return addslashes( $string ); // Disable rest for now, causing problems
-		if( !$this->dbh || version_compare( phpversion(), '4.3.0' ) == '-1' )
-			return mysql_escape_string( $string );
-		else
-			return mysql_real_escape_string( $string, $this->dbh );
 	}
 
 	// ==================================================================
@@ -179,11 +166,13 @@ class HyperDB {
 
 		return '';
 	}
-	
+
 	function is_write_query( $q ) {
 		If( substr( $q, -1 ) == ';' )
 			$q = substr( $q, 0, -1 );
 		if ( preg_match('/^\s*SELECT.*?\s+FROM\s+`?(\w+)`?\s*/is', $q, $maybe) )
+			return false;
+		if ( preg_match('/^\s*SHOW DATABASES\s*/is', $q, $maybe) )
 			return false;
 		if ( preg_match('/^\s*UPDATE\s+`?(\w+)`?\s*/is', $q, $maybe) )
 			return true;
@@ -398,11 +387,29 @@ class HyperDB {
 	}
 
 	/**
+	 * Escapes content for insertion into the database, for security
+	 *
+	 * @param string $string
+	 * @return string query safe string
+	 */
+	function escape($string) {
+		return addslashes( $string ); // Disable rest for now, causing problems
+		if( !$this->dbh || version_compare( phpversion(), '4.3.0' ) == '-1' )
+			return mysql_escape_string( $string );
+		else
+			return mysql_real_escape_string( $string, $this->dbh );
+	}
+
+	/**
 	 * Escapes content by reference for insertion into the database, for security
 	 * @param string $s
 	 */
 	function escape_by_ref( &$s ) {
 		$s = $this->escape( $s );
+	}
+
+	function escape_deep( $array ) {
+		return is_array($array) ? array_map(array(&$this, 'escape_deep'), $array) : $this->escape( $array );
 	}
 
 	/**
@@ -415,6 +422,39 @@ class HyperDB {
 		$query = array_shift($args);
 		array_walk($args, array(&$this, 'escape_by_ref'));
 		return @call_user_func_array('sprintf', array_merge(array($query), $args));
+	}
+
+	/**
+	 * Insert an array of data into a table
+	 * @param string $table WARNING: not sanitized!
+	 * @param array $data should not already be SQL-escaped
+	 * @return mixed results of $this->query()
+	 */
+	function insert($table, $data) {
+		$data = $this->escape_deep($data);
+		$fields = array_keys($data);
+		return $this->query("INSERT INTO $table (`" . implode('`,`',$fields) . "`) VALUES ('".implode("','",$data)."')");
+	}
+
+	/**
+	 * Update a row in the table with an array of data
+	 * @param string $table WARNING: not sanitized!
+	 * @param array $data should not already be SQL-escaped
+	 * @param array $where a named array of WHERE column => value relationships.  Multiple member pairs will be joined with ANDs.  WARNING: the column names are not currently sanitized!
+	 * @return mixed results of $this->query()
+	 */
+	function update($table, $data, $where){
+		$data = $this->escape_deep($data);
+		$bits = $wheres = array();
+		foreach ( array_keys($data) as $k )
+			$bits[] = "`$k` = '$data[$k]'";
+
+		if ( is_array( $where ) )
+			foreach ( $where as $c => $v )
+				$wheres[] = "$c = '" . $this->escape( $v ) . "'";
+		else
+			return false;
+		return $this->query( "UPDATE $table SET " . implode( ', ', $bits ) . ' WHERE ' . implode( ' AND ', $wheres ) . ' LIMIT 1' );
 	}
 
 	// ==================================================================
@@ -694,6 +734,43 @@ HEAD;
 		error_log( "$msg\n\n", 3, "/tmp/db-connect.txt" );
 	}
 
+	/**
+	 * Checks wether of not the database version is high enough to support the features backPress
+	 * @global $wp_version
+	 */
+	function check_database_version() {
+		// Make sure the server has MySQL 4.0
+		$mysql_version = $this->db_version();
+		if ( version_compare($mysql_version, '4.0.0', '<') )
+			return new WP_Error('database_version', __('<strong>ERROR</strong>: MySQL 4.0.0 is required') );
+	}
+
+	// Store just a few DB caps here - nothing fancy
+	function has_cap( $db_cap, $dbh_or_table = false ) {
+		$version = $this->db_version( $dbh_or_table );
+
+		$db_cap = strtolower( $db_cap );
+
+		switch ( $db_cap ) :
+		case 'group_concat' :
+		case 'collation' :
+			return version_compare($version, '4.1', '>=');
+			break;
+		endswitch;
+
+		return false;
+	}
+
+	// table name or mysql resource 
+	function db_version( $dbh_or_table = false ) {
+		if ( !is_resource( $dbh_or_table ) )
+			$dbh_or_table = $this->db_connect( "DESCRIBE $dbh_or_table" );
+		// $dbh_or_table is now a $dbh
+
+		if ( $dbh_or_table )
+			return mysql_get_server_info( $dbh_or_table );
+		return false;
+	}
 }
 
 function localize_hostname($hostname) {
