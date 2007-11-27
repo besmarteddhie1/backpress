@@ -30,6 +30,7 @@ require( BACKPRESS_PATH . 'template.php' );
 require( BACKPRESS_PATH . 'user.php' );
 require( BACKPRESS_PATH . 'script-loader.php' );
 require( BACKPRESS_PATH . 'kses.php' );
+require( BACKPRESS_PATH . 'pluggable.php' );
 
 $_GET    = backpress_global_sanitize($_GET);
 $_POST   = backpress_global_sanitize($_POST);
