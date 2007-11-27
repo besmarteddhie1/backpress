@@ -129,4 +129,11 @@ function wp_redirect($location, $status = 302) {
 }
 endif;
 
+// Checks whether a value could possibly be an ID
+if ( !function_exists('is_backpress_id') ) {
+	function is_backpress_id($data) {
+		return is_numeric($data);
+	}
+}
+
 ?>

@@ -22,7 +22,9 @@ function _backpress_put_user( &$backpress, $args = null ) {
 
 	extract( $args, EXTR_SKIP );
 
-	$ID = (int) $ID;
+	if ( !is_backpack_id($ID) )
+		$ID = (int) $ID;
+	
 	$user_login = backpress_sanitize_user( $user_login, true );
 	$user_nicename = backpress_sanitize_slug( $user_login );
 	if ( !$user_login || !$user_nicename )
@@ -50,23 +52,17 @@ function _backpress_put_user( &$backpress, $args = null ) {
 	if ( !$display_name )
 		$display_name = $user_login;
 
-	if ( $ID ) {
-		$db_return = $backpress->query(
-			$backpress->prepare(
-				"INSERT INTO $backpress->users ( user_login, user_nicename, user_email, user_url, user_pass, user_registered, display_name, user_status ) VALUES ( '%s', '%s', '%s', '%s', '%s', '%s', '%d' )",
-				$user_login, $user_nicename, $user_email, $user_url, $user_pass, $user_registered, $display_name, $user_status
-			)
-		);
-	} else {
-		$db_return = $backpress->query(
-			$backpress->prepare(
-				"UPDATE $backpress->users SET user_login = '%s', user_nicename = '%s', user_email = '%s', user_url = '%s', user_pass = '%s', user_registered = '%s', display_name = '%s', user_status = '%d' WHERE ID = '%d'",
-				$user_login, $user_nicename, $user_email, $user_url, $user_pass, $user_registered, $display_name, $user_status, $ID
-			)
-		);
-		$ID = (int) $db_return;
+	$users_table = empty($backpress->db->users) ? $backpress->table_prefix . "users" : $backpress->db->users;
+	$db_return = NULL;
+	if ( $ID && NULL !== $backpress->db->get_var("SELECT ID FROM $users_table WHERE ID = '$ID'") ) {
+		unset($args['ID']);
+		unset($args['user_registered']);
+		$db_return = $backpress->db->update($users_table, $args, array("ID" => $ID));
 	}
-
+	if ( $db_return === null ) { 
+		$db_return = $backpress->db->insert($users_table, $args);
+	}
+	
 	if ( !$db_return )
 		return new WP_Error( 'BackPress::query', __('Query failed') );
 
