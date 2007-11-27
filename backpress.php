@@ -50,12 +50,14 @@ class BackPress {
 			'write' => 1
 		);
 
-		$db_args = wp_parse_args( $db_args, $db_defaults );
-		extract( $db_args, EXTR_SKIP );
+		if ( NULL !== $db_args ) {
+			$db_args = wp_parse_args( $db_args, $db_defaults );
+			extract( $db_args, EXTR_SKIP );
 
-		// Add to hyperdb's server list
-		if ( !isset($db_servers[$dataset]) )
-			add_db_server( $dataset, $partition, $datacenter, $read, $write, $host, $localhost, $name, $user, $password );
+			// Add to hyperdb's server list
+			if ( !isset($db_servers[$dataset]) )
+				add_db_server( $dataset, $partition, $datacenter, $read, $write, $host, $localhost, $name, $user, $password );
+		}
 
 		// Reference HyperDB and mirror it's useful properties here
 		$this->db =& $hyperdb;
@@ -83,7 +85,7 @@ class BackPress {
 
 		$this->cookie = false;
 		$cookie_defaults = array( 'user' => 'backpress_user', 'pass' => 'backpress_pass', 'path' => '', 'sitepath' => '', 'domain' => '' );
-		if ( $cookie || !backpress_cookie_setting( $this ) )
+		if ( $cookie || !backpress_cookie_settings( $this ) )
 			$this->cookie = wp_parse_args( $cookie, $cookie_defaults );
 
 		$GLOBALS['backpresses'][$this->id] =& $this;
