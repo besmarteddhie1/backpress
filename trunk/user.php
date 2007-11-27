@@ -22,7 +22,7 @@ function _backpress_put_user( &$backpress, $args = null ) {
 
 	extract( $args, EXTR_SKIP );
 
-	if ( !is_backpack_id($ID) )
+	if ( !is_backpress_id($ID) )
 		$ID = (int) $ID;
 	
 	$user_login = backpress_sanitize_user( $user_login, true );
@@ -52,15 +52,14 @@ function _backpress_put_user( &$backpress, $args = null ) {
 	if ( !$display_name )
 		$display_name = $user_login;
 
-	$users_table = empty($backpress->db->users) ? $backpress->table_prefix . "users" : $backpress->db->users;
 	$db_return = NULL;
-	if ( $ID && NULL !== $backpress->db->get_var("SELECT ID FROM $users_table WHERE ID = '$ID'") ) {
+	if ( $ID && NULL !== $backpress->db->get_var("SELECT ID FROM $backpress->users WHERE ID = '$ID'") ) {
 		unset($args['ID']);
 		unset($args['user_registered']);
-		$db_return = $backpress->db->update($users_table, $args, array("ID" => $ID));
+		$db_return = $backpress->db->update($backpress->users, $args, array("ID" => $ID));
 	}
 	if ( $db_return === null ) { 
-		$db_return = $backpress->db->insert($users_table, $args);
+		$db_return = $backpress->db->insert($backpress->users, $args);
 	}
 	
 	if ( !$db_return )
