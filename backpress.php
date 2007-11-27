@@ -91,6 +91,9 @@ class BackPress {
 		$GLOBALS['backpresses'][$this->id] =& $this;
 		if ( !isset($GLOBALS['backpress_prime']) )
 			$GLOBALS['backpress_prime'] =& $this;
+
+		if ( empty($this->users) )
+			$this->users = empty($backpress->db->users) ? $backpress->table_prefix . "users" : $backpress->db->users;
 	}
 
 	function option( $option ) {
