@@ -122,18 +122,19 @@ function backpress_get_user( &$backpress, $ID = 0, $cache = true, $output = OBJE
 
 	if ( !is_backpress( $backpress ) )
 		return new WP_Error( 'backpress', __('Invalid BackPress instance') );
-	if ( is_numeric($ID) ) {
-		$ID = (int) $ID;
+	if ( is_backpress_id($ID) ) {
+		// $ID = (int) $ID;
 		if ( $cache && isset($backpress_user_cache[$ID]) )
 			return $backpress_user_cache[$ID];
-		$sql = "SELECT * FROM $backpress->users WHERE ID = '%d'";
+		$sql = "SELECT * FROM $backpress->users WHERE ID = '%s'";
 	} elseif ( is_array($ID) ) { // NO RETURN VALUE - just for cache
 		if ( $cache && is_array($backpress_user_cache) )
 			$ID = array_diff($ID, array_keys($backpress_user_cache));
-		$ID = array_unique($ID);
-		$ID = join(',', $ID);
-		$ID = preg_replace( '/[^0-9,]/', '', $ID );
-		$ID = preg_replace( '/,+/', ',', $ID );
+		foreach ( $ID as $idx => $val ) {
+			if ( !is_backpress_id($val) )
+				$ID[$idx] = (int) $val;
+		}
+		$ID = "'".implode("','", $ID)."'";
 		if ( !$ID )
 			return;
 		if ( $users = (array) $backpress->get_results( "SELECT * FROM $backpress->users WHERE ID IN ($ID)" ) )
@@ -157,7 +158,7 @@ function backpress_get_user( &$backpress, $ID = 0, $cache = true, $output = OBJE
 		return new WP_Error( 'ID', __('Invalid user id') );
 
 	$user = $backpress->get_row( $backpress->prepare( $sql, $ID ), $output );
-
+	
 	if ( !$user ) { // Cache non-existant users.
 		if ( is_numeric($ID) )
 			$backpress_user_cache[$ID] = false;
@@ -168,7 +169,7 @@ function backpress_get_user( &$backpress, $ID = 0, $cache = true, $output = OBJE
 
 	$user = backpress_append_meta( $backpress, $user );
 
-	$backpress_user_login_cache[$user->user_login] = (int) $user->ID;
+	$backpress_user_login_cache[$user->user_login] = $user->ID;
 
 	return $user;
 }
