@@ -199,7 +199,7 @@ function backpress_append_meta( &$backpress, $object, $args = null ) {
 		foreach ( array_keys($object) as $i )
 			$trans[$object[$i]->$id_field] =& $object[$i];
 		$ids = join(',', array_keys($trans));
-		if ( $metas = $backpress->get_results("SELECT $meta_field, meta_key, meta_value FROM {$backpress->$meta_table} WHERE $meta_field IN ($ids)") )
+		if ( $metas = $backpress->get_results("SELECT $meta_field, meta_key, meta_value FROM $meta_table WHERE $meta_field IN ($ids)") )
 			foreach ( $metas as $meta ) :
 				$trans[$meta->$meta_field]->{$meta->meta_key} = maybe_unserialize( $meta->meta_value );
 				if ( strpos($meta->meta_key, $backpress->table_prefix) === 0 )
@@ -212,7 +212,7 @@ function backpress_append_meta( &$backpress, $object, $args = null ) {
 		}
 		return $object;
 	elseif ( $object ) :
-		if ( $metas = $backpress->get_results("SELECT meta_key, meta_value FROM {$backpress->$meta_table} WHERE $meta_field = '{$object->$id_field}'") )
+		if ( $metas = $backpress->get_results("SELECT meta_key, meta_value FROM $meta_table WHERE $meta_field = '{$object->$id_field}'") )
 			foreach ( $metas as $meta ) :
 				$object->{$meta->meta_key} = maybe_unserialize( $meta->meta_value );
 				if ( strpos($meta->meta_key, $backpress->table_prefix) === 0 )
