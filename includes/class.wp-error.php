@@ -48,10 +48,6 @@ class WP_Error {
 	 * @param mixed $data Optional. Error data.
 	 * @return WP_Error
 	 */
-	function WP_Error($code = '', $message = '', $data = '') {
-		$this->__construct($code, $message, $data);
-	}
-
 	function __construct($code = '', $message = '', $data = '') {
 		if ( empty($code) )
 			return;
@@ -60,6 +56,10 @@ class WP_Error {
 
 		if ( ! empty($data) )
 			$this->error_data[$code] = $data;
+	}
+
+	function WP_Error($code = '', $message = '', $data = '') {
+		$this->__construct($code, $message, $data);
 	}
 
 	/**
