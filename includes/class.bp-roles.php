@@ -65,6 +65,10 @@ class BP_Role {
 	var $capabilities;
 
 	function BP_Role($role, $capabilities) {
+		$this->__construct($role, $capabilities);
+	}
+
+	function __construct($role, $capabilities) {
 		$this->name = $role;
 		$this->capabilities = $capabilities;
 	}

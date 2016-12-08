@@ -49,6 +49,10 @@ class WP_Error {
 	 * @return WP_Error
 	 */
 	function WP_Error($code = '', $message = '', $data = '') {
+		$this->__construct($code, $message, $data);
+	}
+
+	function __construct($code = '', $message = '', $data = '') {
 		if ( empty($code) )
 			return;
 

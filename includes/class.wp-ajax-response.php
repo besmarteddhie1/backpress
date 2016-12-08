@@ -27,6 +27,10 @@ class WP_Ajax_Response {
 	 * @return WP_Ajax_Response
 	 */
 	function WP_Ajax_Response( $args = '' ) {
+		$this->__construct( $args );
+	}
+
+	function __construct( $args = '' ) {
 		if ( !empty($args) )
 			$this->add($args);
 	}
