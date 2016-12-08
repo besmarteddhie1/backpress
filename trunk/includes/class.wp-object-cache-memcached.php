@@ -21,6 +21,11 @@ class WP_Object_Cache
 
 	function WP_Object_Cache()
 	{
+		$this->__construct();
+	}
+
+	function __construct()
+	{
 		global $memcached_servers;
 
 		if ( isset( $memcached_servers ) ) {

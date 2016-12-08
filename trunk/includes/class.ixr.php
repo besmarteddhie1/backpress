@@ -52,6 +52,11 @@ class IXR_Value {
 
     function IXR_Value($data, $type = false)
     {
+        $this->__construct($data, $type);
+    }
+
+    function __construct($data, $type = false)
+    {
         $this->data = $data;
         if (!$type) {
             $type = $this->calculateType();
@@ -196,6 +201,11 @@ class IXR_Message
     var $_parser;
 
     function IXR_Message($message)
+    {
+        $this->__construct($message);
+    }
+
+    function __construct($message)
     {
         $this->message =& $message;
     }
@@ -354,6 +364,11 @@ class IXR_Server
     var $capabilities;
 
     function IXR_Server($callbacks = false, $data = false, $wait = false)
+    {
+        $this->__construct($callbacks, $data, $wait);
+    }
+
+    function __construct($callbacks = false, $data = false, $wait = false)
     {
         $this->setCapabilities();
         if ($callbacks) {
@@ -558,6 +573,11 @@ class IXR_Request
 
     function IXR_Request($method, $args)
     {
+        $this->__construct($method, $args);
+    }
+
+    function __construct($method, $args)
+    {
         $this->method = $method;
         $this->args = $args;
         $this->xml = <<<EOD
@@ -610,6 +630,11 @@ class IXR_Client
     var $error = false;
 
     function IXR_Client($server, $path = false, $port = 80, $timeout = 15)
+    {
+        $this->__construct($server, $path, $port, $timeout);
+    }
+
+    function __construct($server, $path = false, $port = 80, $timeout = 15)
     {
         if (!$path) {
             // Assume we have been given a URL instead
@@ -752,6 +777,11 @@ class IXR_Error
 
     function IXR_Error($code, $message)
     {
+        $this->__construct($code, $message);
+    }
+
+    function __construct($code, $message)
+    {
         $this->code = $code;
         $this->message = htmlspecialchars($message);
     }
@@ -797,6 +827,11 @@ class IXR_Date {
     var $timezone;
 
     function IXR_Date($time)
+    {
+        $this->__construct($time);
+    }
+
+    function __construct($time)
     {
         // $time can be a PHP timestamp or an ISO one
         if (is_numeric($time)) {
@@ -856,6 +891,11 @@ class IXR_Base64
 
     function IXR_Base64($data)
     {
+        $this->__construct($data);
+    }
+
+    function __construct($data)
+    {
         $this->data = $data;
     }
 
@@ -877,6 +917,11 @@ class IXR_IntrospectionServer extends IXR_Server
     var $help;
 
     function IXR_IntrospectionServer()
+    {
+        $this->__construct();
+    }
+
+    function __construct()
     {
         $this->setCallbacks();
         $this->setCapabilities();
@@ -1040,7 +1085,12 @@ class IXR_ClientMulticall extends IXR_Client
 
     function IXR_ClientMulticall($server, $path = false, $port = 80)
     {
-        parent::IXR_Client($server, $path, $port);
+        $this->__construct($server, $path, $port);
+    }
+
+    function __construct($server, $path = false, $port = 80)
+    {
+        parent::__construct($server, $path, $port);
         $this->useragent = 'The Incutio XML-RPC PHP Library (multicall client)';
     }
 

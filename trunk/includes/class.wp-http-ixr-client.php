@@ -10,6 +10,11 @@ class WP_HTTP_IXR_Client extends IXR_Client
 {
     function WP_HTTP_IXR_Client($server, $path = false, $port = 80, $timeout = 15)
     {
+        $this->__construct($server, $path, $port, $timeout);
+    }
+
+    function __construct($server, $path = false, $port = 80, $timeout = 15)
+    {
         if (!$path) {
             // Assume we have been given a URL instead
             $bits = parse_url($server);
