@@ -56,7 +56,7 @@ class PasswordHash {
 
 	function PasswordHash($iteration_count_log2, $portable_hashes)
 	{
-		$this->__construct($iteration_count_log2, $portable_hashes);
+		self::__construct($iteration_count_log2, $portable_hashes);
 	}
 
 	function get_random_bytes($count)

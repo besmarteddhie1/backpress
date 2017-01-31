@@ -140,7 +140,7 @@ class BP_User {
 	}
 
 	function BP_User( $id, $name = '' ) {
-		$this->__construct( $id, $name );
+		self::__construct( $id, $name );
 	}
 
 	/**

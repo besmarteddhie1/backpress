@@ -41,7 +41,7 @@ class WP_Object_Cache
 
 	function WP_Object_Cache()
 	{
-		$this->__construct();
+		self::__construct();
 	}
 
 	function &get_mc( $group )

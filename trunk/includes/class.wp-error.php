@@ -59,7 +59,7 @@ class WP_Error {
 	}
 
 	function WP_Error($code = '', $message = '', $data = '') {
-		$this->__construct($code, $message, $data);
+		self::__construct($code, $message, $data);
 	}
 
 	/**

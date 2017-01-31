@@ -4,7 +4,7 @@ class WP_Users {
 	var $db;
 
 	function WP_Users( &$db ) {
-		$this->__construct( $db );
+		self::__construct( $db );
 //		register_shutdown_function( array(&$this, '__destruct') );
 	}
 

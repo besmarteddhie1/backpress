@@ -235,7 +235,7 @@ class _WP_Dependency {
 	}
 
 	function _WP_Dependency() {
-		$this->__construct();
+		self::__construct();
 	}
 
 	function add_data( $name, $data ) {

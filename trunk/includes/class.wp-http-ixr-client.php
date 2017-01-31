@@ -34,7 +34,7 @@ class WP_HTTP_IXR_Client extends IXR_Client
 
     function WP_HTTP_IXR_Client($server, $path = false, $port = 80, $timeout = 15)
     {
-        $this->__construct($server, $path, $port, $timeout);
+        self::__construct($server, $path, $port, $timeout);
     }
 
     function query()

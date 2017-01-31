@@ -273,7 +273,7 @@ class WP_Object_Cache {
 	 * @return WP_Object_Cache
 	 */
 	function WP_Object_Cache() {
-		return $this->__construct();
+		return self::__construct();
 	}
 
 	/**
