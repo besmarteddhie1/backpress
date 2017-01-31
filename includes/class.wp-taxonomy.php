@@ -24,7 +24,7 @@ class WP_Taxonomy {
 	var $taxonomies = array();
 
 	function WP_Taxonomy( &$db ) {
-		$this->__construct( $db );
+		self::__construct( $db );
 		register_shutdown_function( array(&$this, '__destruct') );
 	}
 

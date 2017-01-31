@@ -72,7 +72,7 @@ class IXR_Value {
 
     function IXR_Value($data, $type = false)
     {
-        $this->__construct($data, $type);
+        self::__construct($data, $type);
     }
 
     function calculateType()
@@ -207,7 +207,7 @@ class IXR_Message
 
     function IXR_Message($message)
     {
-        $this->__construct($message);
+        self::__construct($message);
     }
 
     function parse()
@@ -377,7 +377,7 @@ class IXR_Server
 
     function IXR_Server($callbacks = false, $data = false, $wait = false)
     {
-        $this->__construct($callbacks, $data, $wait);
+        self::__construct($callbacks, $data, $wait);
     }
 
     function serve($data = false)
@@ -593,7 +593,7 @@ EOD;
 
     function IXR_Request($method, $args)
     {
-        $this->__construct($method, $args);
+        self::__construct($method, $args);
     }
 
     function getLength()
@@ -653,7 +653,7 @@ class IXR_Client
 
     function IXR_Client($server, $path = false, $port = 80, $timeout = 15)
     {
-        $this->__construct($server, $path, $port, $timeout);
+        self::__construct($server, $path, $port, $timeout);
     }
 
     function query()
@@ -783,7 +783,7 @@ class IXR_Error
 
     function IXR_Error($code, $message)
     {
-        $this->__construct($code, $message);
+        self::__construct($code, $message);
     }
 
     function getXml()
@@ -838,7 +838,7 @@ class IXR_Date {
 
     function IXR_Date($time)
     {
-        $this->__construct($time);
+        self::__construct($time);
     }
 
     function parseTimestamp($timestamp)
@@ -896,7 +896,7 @@ class IXR_Base64
 
     function IXR_Base64($data)
     {
-        $this->__construct($data);
+        self::__construct($data);
     }
 
     function getXml()
@@ -952,7 +952,7 @@ class IXR_IntrospectionServer extends IXR_Server
 
     function IXR_IntrospectionServer()
     {
-        $this->__construct();
+        self::__construct();
     }
 
     function addCallback($method, $callback, $args, $help)
@@ -1091,7 +1091,7 @@ class IXR_ClientMulticall extends IXR_Client
 
     function IXR_ClientMulticall($server, $path = false, $port = 80)
     {
-        $this->__construct($server, $path, $port);
+        self::__construct($server, $path, $port);
     }
 
     function addCall()

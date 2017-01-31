@@ -32,7 +32,7 @@ class WP_Ajax_Response {
 	}
 
 	function WP_Ajax_Response( $args = '' ) {
-		$this->__construct( $args );
+		self::__construct( $args );
 	}
 
 	/**

@@ -10,7 +10,7 @@ class WP_Auth
 
 	function WP_Auth( &$db, &$users, $cookies )
 	{
-		$this->__construct( $db, $users, $cookies );
+		self::__construct( $db, $users, $cookies );
 	}
 
 	/**

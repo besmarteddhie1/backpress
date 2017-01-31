@@ -49,7 +49,7 @@ class WP_Http {
 	 * @return WP_Http
 	 */
 	function WP_Http() {
-		$this->__construct();
+		self::__construct();
 	}
 
 	/**
@@ -1607,7 +1607,7 @@ class WP_Http_Cookie {
 	 * @param string|array $data Raw cookie data.
 	 */
 	function WP_Http_Cookie( $data ) {
-		$this->__construct( $data );
+		self::__construct( $data );
 	}
 
 	/**

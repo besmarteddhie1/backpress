@@ -9,7 +9,7 @@ class BP_Roles {
 	}
 
 	function BP_Roles() {
-		$this->__construct();
+		self::__construct();
 	}
 
 	function add_role($role, $display_name, $capabilities = '') {
@@ -70,7 +70,7 @@ class BP_Role {
 	}
 
 	function BP_Role($role, $capabilities) {
-		$this->__construct($role, $capabilities);
+		self::__construct($role, $capabilities);
 	}
 
 	function add_cap($cap, $grant = true) {
